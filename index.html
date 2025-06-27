@@ -1,182 +1,146 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Quizescu</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Quizescu — Wizard pe pași</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
+    :root {
+      --clr-bg: #f0f4f8;
+      --clr-card-bg: rgba(255,255,255,0.6);
+      --clr-accent: #4e89ff;
+      --clr-accent-hover: #3367d6;
+      --clr-success: #34a853;
+      --clr-error:   #d93025;
+      --clr-text: #1e213a;
+      --radius: 12px;
+      --transition: 0.3s ease;
+      --font: 'Roboto', sans-serif;
+    }
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 0;
-      background: #f0f4f8;
-      font-family: 'Roboto', sans-serif;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      margin: 0; padding: 0;
+      font-family: var(--font);
+      background: var(--clr-bg);
+      color: var(--clr-text);
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh;
     }
-
-    #header {
-      width: 100%;
-      max-width: 800px;
-      padding: 20px;
-      text-align: center;
-      background: linear-gradient(90deg, #4e89ff, #8f78ff);
-      color: #fff;
+    header {
+      width: 100%; max-width: 800px;
+      padding: 1rem; text-align: center;
+      background: linear-gradient(90deg, var(--clr-accent), #8f78ff);
+      color: #fff; border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      border-bottom-left-radius: 12px;
-      border-bottom-right-radius: 12px;
+    }
+    header h1 { margin: 0; font-size: 1.8rem; }
+
+    /* afişare pas curent */
+    #floating-step {
+      position: fixed; top: 20px; right: 20px;
+      background: rgba(66,133,244,0.9); color: #fff;
+      padding: 0.5rem 1rem; border-radius: var(--radius);
+      font-weight: 500; pointer-events: none; z-index: 10;
     }
 
-    #header h1 {
-      margin: 0 0 8px;
-      font-weight: 700;
-      font-size: 1.6rem;
+    /* bara progres (opțional) */
+    #progress-bar {
+      width: 100%; max-width: 800px; height: 8px;
+      background: #ddd; border-radius: 4px;
+      overflow: hidden; margin: 1rem 0 0.5rem;
     }
-
-    /* Floating score box */
-    #floating-score {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(66,133,244,0.9);
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      font-weight: 500;
-      z-index: 1000;
-      pointer-events: none;
+    #progress {
+      width: 0%; height: 100%;
+      background: var(--clr-accent);
+      transition: width 0.4s ease;
     }
 
     #quiz {
-      width: 100%;
-      max-width: 800px;
-      margin: 20px 0;
+      width: 100%; max-width: 800px; padding: 0 1rem;
     }
-
     .question-container {
-      background: #fff;
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 24px;
+      background: var(--clr-card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: var(--radius);
+      padding: 1.5rem; margin-bottom: 1rem;
       box-shadow: 0 8px 16px rgba(0,0,0,0.05);
-      transition: transform 0.2s;
-    }
-    .question-container:hover {
-      transform: translateY(-4px);
     }
     .question-title {
-      font-size: 1.2rem;
-      font-weight: 500;
-      margin-bottom: 16px;
-      color: #1e213a;
+      font-size: 1.25rem; font-weight: 500;
+      margin-bottom: 1rem;
     }
+
+    /* tabel răspunsuri */
     .answers-table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0 8px;
-      margin-bottom: 16px;
+      margin-bottom: 1rem;
     }
     .answers-table td.answer {
       padding: 14px 18px;
       border: 2px solid #ddd;
-      border-radius: 8px;
+      border-radius: var(--radius);
       cursor: pointer;
-      transition: background 0.3s, border-color 0.3s, box-shadow 0.2s;
       background: #fff;
+      transition: background var(--transition), border-color var(--transition), transform 0.2s;
       user-select: none;
     }
     .answers-table td.answer:hover {
-      background-color: #fafafa;
+      background: #fafafa;
       border-color: #ccc;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-    .answers-table td.answer.correct {
-      background-color: #e0f7e9;
-      border-color: #34a853;
-    }
-    .answers-table td.answer.incorrect {
-      background-color: #ffeaea;
-      border-color: #d93025;
+      transform: translateY(-2px);
     }
     .answers-table td.answer.selected {
-      background-color: #e8f0fe;
-      border-color: #4285f4;
+      background: #e8f0fe;
+      border-color: var(--clr-accent);
     }
+    .answers-table td.answer.correct {
+      background: #e0f7e9;
+      border-color: var(--clr-success);
+    }
+    .answers-table td.answer.incorrect {
+      background: #ffeaea;
+      border-color: var(--clr-error);
+    }
+
     .controls {
-      margin-top: 12px;
-      display: flex;
-      gap: 12px;
-      justify-content: flex-end;
+      display: flex; justify-content: flex-end; gap: 0.5rem;
     }
     .btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: background 0.3s, box-shadow 0.2s;
+      padding: 0.6rem 1.2rem;
+      border: none; border-radius: var(--radius);
+      font-size: 0.95rem; font-weight: 500; cursor: pointer;
+      transition: background var(--transition), box-shadow 0.2s;
     }
     .btn-check {
-      background: #4285f4;
-      color: #fff;
+      background: var(--clr-accent); color: #fff;
     }
-    .btn-check:hover:not(:disabled) {
-      background: #3367d6;
-      box-shadow: 0 4px 12px rgba(66,133,244,0.35);
-    }
-    .btn-check:disabled {
-      background: #a0c3ff;
-      cursor: not-allowed;
+    .btn-check:disabled { background: #a0c3ff; cursor: not-allowed; }
+    .btn-check:hover:enabled {
+      background: var(--clr-accent-hover);
+      box-shadow: 0 4px 12px rgba(66,133,244,0.3);
     }
     .btn-reset {
-      background: #fff;
-      color: #555;
-      border: 2px solid #ddd;
+      background: #fff; color: #666; border: 2px solid #ddd;
     }
-    .btn-reset:hover {
-      background: #f7f7f7;
-    }
-    .btn-finish {
-      background: #34a853;
-      color: #fff;
-      margin-bottom: 40px;
-    }
-    .btn-finish:hover:not(:disabled) {
-      background: #2c8c47;
-      box-shadow: 0 4px 12px rgba(52,168,83,0.35);
-    }
-    .btn-finish:disabled {
-      background: #a8d5b5;
-      cursor: not-allowed;
-    }
-    #finish-container {
-      width: 100%;
-      max-width: 800px;
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    #result {
-      margin-top: 16px;
-      font-size: 1.2rem;
-      font-weight: 500;
-    }
+    .btn-reset:hover { background: #f7f7f7; }
+
+    #navigation { width: 100%; max-width: 800px; padding: 0 1rem; margin-top: 0.5rem; }
+    #finish-container { width: 100%; max-width: 800px; padding: 1rem; text-align: center; }
+    #result { font-size: 1.2rem; font-weight: 500; margin-top: 1rem; }
   </style>
 </head>
 <body>
 
-  <div id="floating-score">Puncte: 0 / 0</div>
-
-  <div id="header">
-    <h1>Quizescu</h1>
-  </div>
-
-  <div id="quiz"></div>
-
+  <div id="floating-step">Întrebări: 1 / 0</div>
+  <header><h1>🎯 Quizescu</h1></header>
+  <div id="progress-bar"><div id="progress"></div></div>
+  <main id="quiz"></main>
+  <div id="navigation" class="controls"></div>
   <div id="finish-container"></div>
 
   <script>
@@ -614,161 +578,161 @@
   ],
   correctIndex: 4
 }];
-
-    let score = 0;
+    let score = 0, currentIndex = 0;
     const total = questions.length;
 
-    function updateScore() {
-      const text = `Puncte: ${score} / ${total}`;
-      document.getElementById('floating-score').textContent = text;
+    const stepEl = document.getElementById('floating-step');
+    const progressEl = document.getElementById('progress');
+    const quizEl = document.getElementById('quiz');
+    const navEl = document.getElementById('navigation');
+    const finishEl = document.getElementById('finish-container');
+
+    function updateStep(idx) {
+      stepEl.textContent = `Întrebări: ${idx+1} / ${total}`;
+      const pct = Math.round((idx / total)*100);
+      progressEl.style.width = pct+'%';
     }
 
-    function buildQuiz() {
-      const quizDiv = document.getElementById('quiz');
-      updateScore();
+    function finishQuiz() {
+      quizEl.innerHTML = '';
+      navEl.innerHTML = '';
+      const passed = score >= total/2;
+      finishEl.innerHTML = `<div id="result">${
+        passed? 'Ai trecut! 🎉':'Mai exersează! ❌'
+      } Punctaj: ${score} / ${total}</div>`;
+    }
 
-      questions.forEach((q, qIndex) => {
-        const container = document.createElement('div');
-        container.className = 'question-container';
-        container.answeredCorrectly = false;
+    function showQuestion(idx) {
+      quizEl.innerHTML = '';
+      navEl.innerHTML = '';
+      updateStep(idx);
 
-        // Titlu
-        const title = document.createElement('div');
-        title.className = 'question-title';
-        title.textContent = `${qIndex + 1}. ${q.question}`;
-        container.appendChild(title);
+      const q = questions[idx];
+      const card = document.createElement('div');
+      card.className = 'question-container';
+      card.checked = false;
+      card.selected = [];
 
-        // Tabel răspunsuri
-        const answersTable = document.createElement('table');
-        answersTable.className = 'answers-table';
-        container.appendChild(answersTable);
+      // Titlu
+      const title = document.createElement('div');
+      title.className = 'question-title';
+      title.textContent = `${idx+1}. ${q.question}`;
+      card.appendChild(title);
 
-        const corrects = Array.isArray(q.correctIndex)
-                         ? q.correctIndex
-                         : [q.correctIndex];
-        const isMulti = corrects.length > 1;
-        container.selected = [];
+      // Tabel răspunsuri
+      const table = document.createElement('table');
+      table.className = 'answers-table';
+      card.appendChild(table);
 
-        q.answers.forEach((answer, aIndex) => {
-          const letter = String.fromCharCode(97 + aIndex);
-          const row = document.createElement('tr');
-          const cell = document.createElement('td');
-          cell.className = 'answer';
-          cell.textContent = `${letter}) ${answer}`;
+      const corrects = Array.isArray(q.correctIndex)
+                        ? q.correctIndex
+                        : [q.correctIndex];
 
-          cell.addEventListener('click', () => {
-            if (!isMulti) {
-              if (container.answered) return;
-              container.answered = true;
-              const ok = corrects.includes(aIndex);
-              if (ok) {
-                cell.classList.add('correct');
-                if (!container.answeredCorrectly) {
-                  score++;
-                  container.answeredCorrectly = true;
-                  updateScore();
-                }
-              } else {
-                cell.classList.add('incorrect');
-              }
-              corrects.forEach(ci => {
-                answersTable.rows[ci].cells[0].classList.add('correct');
-              });
+      q.answers.forEach((ans,j) => {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.className = 'answer';
+        cell.textContent = String.fromCharCode(97+j)+') '+ans;
+
+        cell.addEventListener('click', () => {
+          // single-choice
+          if (corrects.length === 1) {
+            if (card.checked) return;
+            card.checked = true;
+            const ok = corrects.includes(j);
+            if (ok) {
+              cell.classList.add('correct');
+              score++;
             } else {
-              if (container.checked) return;
-              const idx = container.selected.indexOf(aIndex);
-              if (idx > -1) {
-                container.selected.splice(idx, 1);
-                cell.classList.remove('selected');
-              } else {
-                container.selected.push(aIndex);
-                cell.classList.add('selected');
-              }
-              checkBtn.disabled = container.selected.length === 0;
+              cell.classList.add('incorrect');
+              table.rows[corrects[0]].cells[0].classList.add('correct');
             }
-          });
-
-          row.appendChild(cell);
-          answersTable.appendChild(row);
+            nextBtn.disabled = false;
+          }
+          // multi-choice
+          else {
+            if (card.checked) return;
+            if (cell.classList.contains('selected')) {
+              cell.classList.remove('selected');
+              card.selected = card.selected.filter(x=>x!==j);
+            } else {
+              cell.classList.add('selected');
+              card.selected.push(j);
+            }
+            checkBtn.disabled = card.selected.length === 0;
+          }
         });
 
-        // Controale
-        const controls = document.createElement('div');
-        controls.className = 'controls';
+        row.appendChild(cell);
+        table.appendChild(row);
+      });
 
-        let checkBtn = null;
-        if (isMulti) {
-          checkBtn = document.createElement('button');
-          checkBtn.className = 'btn btn-check';
-          checkBtn.textContent = 'Verifică';
-          checkBtn.disabled = true;
-          checkBtn.addEventListener('click', () => {
-            container.checked = true;
-            const sel = container.selected.slice().sort().join();
-            const crt = corrects.slice().sort().join();
-            if (sel === crt && !container.answeredCorrectly) {
-              score++;
-              container.answeredCorrectly = true;
-              updateScore();
-            }
-            Array.from(answersTable.rows).forEach((r, idx) => {
-              const c = r.cells[0];
-              if (corrects.includes(idx)) c.classList.add('correct');
-              else if (container.selected.includes(idx))
-                c.classList.add('incorrect');
-              c.classList.remove('selected');
-            });
-            checkBtn.disabled = true;
+      // butoane multi-choice
+      let checkBtn;
+      if (corrects.length > 1) {
+        checkBtn = document.createElement('button');
+        checkBtn.className = 'btn btn-check';
+        checkBtn.textContent = 'Verifică';
+        checkBtn.disabled = true;
+        checkBtn.addEventListener('click', () => {
+          card.checked = true;
+          const sel = card.selected.slice().sort().join(',');
+          const cor = corrects.slice().sort().join(',');
+          if (sel===cor) {
+            score++;
+          }
+          Array.from(table.rows).forEach((r,i)=>{
+            const c = r.cells[0];
+            if (corrects.includes(i)) c.classList.add('correct');
+            else if (card.selected.includes(i)) c.classList.add('incorrect');
           });
-          controls.appendChild(checkBtn);
-        }
+          nextBtn.disabled = false;
+        });
 
         const resetBtn = document.createElement('button');
         resetBtn.className = 'btn btn-reset';
         resetBtn.textContent = 'Reset';
         resetBtn.addEventListener('click', () => {
-          container.answered = false;
-          container.checked = false;
-          if (container.answeredCorrectly) {
-            score--;
-            container.answeredCorrectly = false;
-            updateScore();
-          }
-          container.selected = [];
-          Array.from(answersTable.rows).forEach(r => {
-            const c = r.cells[0];
-            c.classList.remove('correct','incorrect','selected');
+          card.checked = false;
+          card.selected = [];
+          Array.from(table.rows).forEach(r => {
+            r.cells[0].classList.remove('selected','correct','incorrect');
           });
-          if (checkBtn) checkBtn.disabled = true;
+          checkBtn.disabled = true;
+          nextBtn.disabled = true;
+          // dacă s-a dat deja punctaj, îl anulăm
+          if (nextBtn.disabled===false) {
+            score = Math.max(0, score-1);
+          }
         });
-        controls.appendChild(resetBtn);
 
-        container.appendChild(controls);
-        quizDiv.appendChild(container);
+        const ctrl = document.createElement('div');
+        ctrl.className = 'controls';
+        ctrl.appendChild(checkBtn);
+        ctrl.appendChild(resetBtn);
+        card.appendChild(ctrl);
+      }
+
+      quizEl.appendChild(card);
+
+      // buton Next / Finalizează
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'btn btn-check';
+      nextBtn.textContent = idx<total-1 ? 'Următorul' : 'Finalizează Quiz';
+      nextBtn.disabled = true;
+      nextBtn.addEventListener('click', ()=> {
+        if (idx<total-1) {
+          currentIndex++;
+          showQuestion(currentIndex);
+        } else {
+          finishQuiz();
+        }
       });
+      navEl.appendChild(nextBtn);
     }
 
-    function createFinishButton() {
-      const finishContainer = document.getElementById('finish-container');
-      const finishBtn = document.createElement('button');
-      finishBtn.className = 'btn btn-finish';
-      finishBtn.textContent = 'Finalizează Quiz';
-      finishBtn.addEventListener('click', () => {
-        const passed = score >= total/2;
-        const resultDiv = document.getElementById('result');
-        resultDiv.textContent = passed
-          ? `Ai trecut! Bravo sefule ai invatat mecanic Punctaj: ${score} / ${total}`
-          : `Nu ai trecut. Esti terminat pe bune na punctaj: ${score} / ${total}`;
-        finishBtn.disabled = true;
-      });
-      const resultDiv = document.createElement('div');
-      resultDiv.id = 'result';
-      finishContainer.appendChild(finishBtn);
-      finishContainer.appendChild(resultDiv);
-    }
-
-    buildQuiz();
-    createFinishButton();
+    // pornire
+    showQuestion(0);
   </script>
 </body>
 </html>
