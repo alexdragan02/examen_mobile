@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Interactiv</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f7fa; padding: 20px; }
+    #quiz { max-width: 800px; margin: auto; }
+    .question-container { 
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .question-title { 
+      font-size: 1.1rem; 
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #333;
+    }
+    .answer { 
+      padding: 10px 12px; 
+      margin: 6px 0; 
+      border: 1px solid #ccc; 
+      border-radius: 4px; 
+      cursor: pointer; 
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .answer:hover { background-color: #f0f0f0; border-color: #bdbdbd; }
+    .answer.correct { background-color: #c8e6c9; border-color: #66bb6a; }
+    .answer.incorrect { background-color: #ffcdd2; border-color: #e57373; }
+    .answer.selected { background-color: #e3f2fd; border-color: #42a5f5; }
+    .check-btn { 
+      display: inline-block; 
+      margin-top: 10px; 
+      padding: 8px 16px; 
+      background: #42a5f5; 
+      color: #fff; 
+      border: none; 
+      border-radius: 4px; 
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .check-btn:disabled { background: #90caf9; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <div id="quiz"></div>
+
+  <script>
+   const questions = [
+      {
+        question: "Ce caracteristică a favorizat adoptarea standardului 802.11g în favoarea standardului 802.11a?",
+        answers: [
+          "802.11a oferă o arie de acoperire mai mică decât 802.11g",
+          "Banda de frecvență de 2.4 GHz nu este la fel de aglomerată ca cea de 5 GHz",
+          "802.11a este mai susceptibil la interferența RF din partea dispozitivelor wireless comerciale",
+          "802.11a folosește o tehnică de modulare mai scumpă decât 802.11g",
+          "802.11a folosește o tehnică de modulare mai complicată, spre deosebire de 802.11g"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Care dintre următoarele afirmații este adevărată?",
+        answers: [
+          "802.11i folosește 3DES pentru criptare",
+          "Autentificarea deschisă nu folosește verificarea clientului/AP-ului",
+          "Protocolul 802.11i este identic din punct de vedere funcțional cu WPA",
+          "802.11i nu încorporează un server RADIUS pentru autentificarea enterprise",
+          "Un client wireless se asociază în prima fază cu un AP, apoi se autentifică pentru accesul la rețea"
+        ],
+        correctIndex: 1
+      },
+      {
+        question: "Ce metodă de instalare va permite conectivitatea la o nouă rețea wireless?",
+        answers: [
+          "Setarea protocolului WEP doar pe AP",
+          "Setarea accesului deschis atât pe AP, cât și pe fiecare echipament conectat la acesta",
+          "Setarea criptării totale pe AP și a accesului deschis pe fiecare echipament conectat la acesta",
+          "Setarea criptării totale pe fiecare echipament din WLAN și a accesului deschis pe AP"
+        ],
+        correctIndex: 1
+      },
+      {
+        question: "Atunci când se configurează un AP, ce setare utilizează administratorul de rețea pentru a configura identificatorul unic pe care echipamentul client îl folosește pentru a distinge rețeaua wireless de alte rețele wireless?",
+        answers: [
+          "Network Mode",
+          "Network Name (SSID)",
+          "Radio Band",
+          "Wide Channel",
+          "Base Channel"
+        ],
+        correctIndex: 1
+      },
+      {
+        question: "Care dintre următoarele afirmații sunt adevărate cu privire la securitatea wireless? (alegeți două)",
+        answers: [
+          "Filtrarea pe baza adreselor MAC previne vizualizarea conținutului frame-urilor wireless",
+          "Oferirea unei chei de rețea clientului wireless permite ca o rețea disponibilă să fie vizibilă",
+          "Inhibarea transmiterii broadcast de către AP a SSID-ului previne ca AP-ul să fie descoperit",
+          "SSID-urile implicite ale producătorilor de AP-uri sunt în general cunoscute și permit conexiuni wireless nedorite",
+          "Adăugarea manuală a unei rețele și setarea SSID-ului pe un client wireless determină vizibilitatea rețelei chiar dacă SSID-ul nu este trimis broadcast"
+        ],
+        correctIndex: [3, 4]
+      },
+      {
+        question: "Ce echipamente/funcționalități încorporează majoritatea routerelor wireless? (alegeți trei)",
+        answers: [
+          "Un gateway pentru conectarea cu alte infrastructuri de rețea",
+          "Un switch Ethernet",
+          "Stație de management de rețea",
+          "Server VIP",
+          "AP wireless"
+        ],
+        correctIndex: [0, 1, 4]
+      },
+      {
+        question: "Ce metodă de acces folosește un AP wireless pentru a permite conectivitatea mai multor utilizatori și accesul distribuit?",
+        answers: [
+          "CSMA/CD",
+          "Token passing",
+          "CSMA/CA",
+          "Sondare",
+          "Acces direct"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "De ce este securitatea importantă în rețelele wireless?",
+        answers: [
+          "Rețelele wireless sunt în general mai lente decât rețelele cablate",
+          "Stațiile de televiziune și alte echipamente pot interfera cu semnale wireless",
+          "Rețelele wireless transmit date broadcast într-un mediu ce permite un acces facil",
+          "Factori de mediu precum furtunile pot afecta rețelele wireless"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Ce standard wireless oferă o bună compatibilitate cu alte standarde wireless mai vechi, dar are performanțe superioare?",
+        answers: [
+          "802.11a",
+          "802.11b",
+          "802.11g",
+          "802.11n",
+          "802.16"
+        ],
+        correctIndex: 3
+      },
+      {
+        question: "Ce caracterizează securitatea rețelelor wireless?",
+        answers: [
+          "Rețelele wireless oferă aceleași caracteristici de securitate ca și rețelele cablate",
+          "Folosirea criptării previne clienții neautorizați de asocierea cu un AP",
+          "Un atacator are nevoie de acces fizic la cel puțin un echipament de rețea pentru a lansa un atac",
+          "Dacă este dezactivat broadcast-ul SSID, un atacator trebuie întâi să „adulmeci” SSID-ul înainte de a se putea conecta"
+        ],
+        correctIndex: 3
+      },
+      {
+        question: "Ce caracteristică a securității wireless permite unui administrator de rețea să configureze un AP cu adresele MAC ale plăcilor de rețea astfel încât doar acele plăci să se conecteze la rețeaua wireless?",
+        answers: [
+          "Autentificarea",
+          "SSID broadcasting",
+          "Filtrarea pe baza adreselor MAC",
+          "EAP (Extensible Authentication Protocol)",
+          "Radius (Remote Authentication Dial-In User Service)"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Ce transmite un client wireless pentru a descoperi rețelele WLAN disponibile?",
+        answers: [
+          "Un beacon",
+          "O parolă",
+          "Un probe request",
+          "Un association request",
+          "Un SSID"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Într-o rețea WLAN, de ce este nevoie ca implementarea AP-urilor să se facă astfel încât fiecare AP să folosească un canal diferit de comunicație?",
+        answers: [
+          "Pentru a menține utilizatorii în sub-rețele separate",
+          "Pentru a controla lățimea de bandă utilizată",
+          "Pentru a preveni interferența semnalelor",
+          "Pentru a asigura securitatea traficului"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Ce rol are autentificarea într-o rețea WLAN?",
+        answers: [
+          "Convertește datele în text clar înaintea transmisiei",
+          "Indică ce canal de comunicație va fi folosit pentru date",
+          "Determină ce client utilizează rețeaua",
+          "Permite clientului să-și aleagă canalul de comunicație folosit"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Ce funcție de bază este oferită de către un AP wireless?",
+        answers: [
+          "Convertește datele din 802.11 în incapsularea frame-urilor 802.3",
+          "Oferă servicii DHCP locale",
+          "Atribuie dinamic o adresă IP unui client",
+          "Oferă un gateway pentru conectarea cu alte rețele",
+          "Oferă un firewall pentru protecția rețelei WLAN"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Ce problemă rezolvă protocolul CSMA/CA în cazul rețelelor wireless?",
+        answers: [
+          "Saturarea lățimii de bandă",
+          "Accesul la mediu",
+          "Aspecte legate de securitate",
+          "Interoperabilitatea echipamentelor",
+          "Transmisia broadcast"
+        ],
+        correctIndex: 1
+      },
+      {
+        question: "Ce folosește un AP pentru a permite clienților WLAN să vadă rețelele disponibile într-o anumită zonă de acoperire?",
+        answers: [
+          "Un association response",
+          "Un beacon",
+          "O cheie",
+          "Un probe request"
+        ],
+        correctIndex: 1
+      },
+      {
+        question: "Cum se numește zona de acoperire a unei rețele wireless?",
+        answers: [
+          "Distribution System",
+          "Beacon",
+          "Basic Service Set",
+          "Extended Service Set"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Care dintre următoarele afirmații sunt adevărate cu privire la termenul WI-FI?",
+        answers: [
+          "O abreviere de la “wireless widelity”",
+          "Conceput de IEEE și este o abreviere de la “wireless fidelity”",
+          "Conceput de ANSI",
+          "Conceput de Wi-Fi Alliance",
+          "Conceput de ETSI"
+        ],
+        correctIndex: 3
+      },
+      {
+        question: "Ce componentă a procesului de proiectare a rețelei identifică amplasamentul AP-urilor?",
+        answers: [
+          "Site survey",
+          "Testarea riscurilor",
+          "Proiectarea scalabilității",
+          "Analiza protocoalelor de rețea",
+          "Analiza WLAN"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Ce folosește un AP pentru a permite clienților WLAN să vadă rețelele disponibile într-o anumită zonă de acoperire?",
+        answers: [
+          "O cheie",
+          "Un probe request",
+          "Un association response",
+          "Un beacon"
+        ],
+        correctIndex: 3
+      },
+      {
+        question: "Ce tip de frame-uri sunt utilizate pentru reclamă, autentificare și asociere cu un AP wireless?",
+        answers: [
+          "Management",
+          "Control",
+          "Beacon",
+          "SSID",
+          "Acknowledgment"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Ce combinație de autentificare și criptare WLAN este recomandată pentru utilizatorii casnici?",
+        answers: [
+          "WPA2 și AES",
+          "WEP și TKIP",
+          "WEP și RC4",
+          "EAP și AES",
+          "WPA și PSK"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Ce tehnică de modulare este folosită în rețelele wireless LANs?",
+        answers: [
+          "FM",
+          "AM",
+          "DES",
+          "OFDM",
+          "AES"
+        ],
+        correctIndex: 3
+      },
+      {
+        question: "Cum se numește zona de acoperire a unei rețele wireless?",
+        answers: [
+          "Beacon",
+          "Extended Service Set",
+          "Distribution System",
+          "Basic Service Set"
+        ],
+        correctIndex: 3
+      },
+      {
+        question: "Atunci când se configurează un AP, ce setare utilizează admin. de rețea pentru a configura identificatorul unic pe care echipamentul client îl folosește pentru a distinge rețeaua wireless de alte rețele wireless?",
+        answers: [
+          "Network Name (SSID)",
+          "Radio Band",
+          "Network Mode",
+          "Wide Channel",
+          "Base Channel"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Care dintre următoarele afirmații NU este adevărată?",
+        answers: [
+          "Frecvența este măsurată în herți (Hz) sau în secunde",
+          "Frecvența reprezintă numărul de repetări a unui eveniment în unitatea de timp",
+          "Cu cât frecvența este mai mare cu atât este mai mare rata de absorbție a undelor în atmosfera Pământului",
+          "Cu cât frecvența este mai mare cu atât este mai mare rata de reflecție a semnalului"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Un AP fals reprezintă un AP configurat greșit, ce este conectat la o rețea și reprezintă o posibilă sursă de atacuri de tip DoS?",
+        answers: [
+          "ADEVARAT",
+          "FALS"
+        ],
+        correctIndex: 1
+      },
+      {
+        question: "De ce este securitatea importantă în rețelele wireless?",
+        answers: [
+          "Rețelele wireless sunt în general mai lente decât rețelele cablate",
+          "Stațiile de televiziune și alte echipamente pot interfera cu semnalele wireless",
+          "Rețelele wireless transmit date broadcast într-un mediu ce permite un acces facil",
+          "Factorii de mediu precum furtunile pot afecta rețelele wireless",
+          "Parolele sunt mai puțin importante în rețelele fără fir"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "În cazul unui atac cibernetic de tip MITM (man-in-the-middle), hacker-ul este poziționat între două entități legitime, în timp ce acesta încearcă să citească sau să altereze datele inter-schimbate între cele două părți.",
+        answers: [
+          "ADEVARAT",
+          "FALS"
+        ],
+        correctIndex: 0
+      },{
+  question: "Ce bandă de frecvență folosește IEEE 802.11b/g?",
+  answers: [
+    "60 GHz",
+    "900 MHz",
+    "2.4 GHz",
+    "5 GHz",
+    "24 GHz"
+  ],
+  correctIndex: 2
+},
+{
+  question: "Etapele procesului de asociere în mediul wireless sunt:",
+  answers: [
+    "asociere, autentificare, probă",
+    "autentificare, acces, asociere",
+    "acces, autentificare, asociere",
+    "probă, autentificare, asociere",
+    "probă, autentificare, conexiune"
+  ],
+  correctIndex: 3
+},
+{
+  question: "Cum se numește caracteristica unei plăci de rețea 802.11n care poate prelua toate undele electromagnetice primite și poate compune o undă de calitate înaltă, rezultând un throughput superior?",
+  answers: [
+    "Combo",
+    "MRC",
+    "MIMO",
+    "CSMA/CD",
+    "CSMA/CA"
+  ],
+  correctIndex: 1
+},
+{
+  question: "Care dintre următoarele afirmații descrie corect un ESS?",
+  answers: [
+    "Un ESS este o conexiune de tip hotspot",
+    "Bluetooth este un exemplu de mod de infrastructură ESS",
+    "Un ESS este o conexiune a unui BSS la o rețea wireless ad-hoc",
+    "Un ESS constă din două sau mai multe BSS interconectate wireless printr-un DS",
+    "Presupune unirea mai multor BSS prin intermediul unui sistem de distribuție comun (DS)"
+  ],
+  correctIndex: 4
+},
+{
+  question: "Cum se manifestă atacul de tip MITM „evil twin AP”?",
+  answers: [
+    "Atacatorul instalează un sniffer ce interceptează mesajele din rețeaua wireless",
+    "Atacatorul creează un AP neautorizat cu semnal puternic și îl configurează cu un SSID similar unui AP legitim",
+    "Atacatorul creează o rețea de tip LAN Ethernet ce se conectează prin cablu în dispozitivele victimelor",
+    "Atacatorul creează un AP autorizat ce conține o parte din denumirea unui SSID existent"
+  ],
+  correctIndex: 1
+},
+{
+  question: "Ce tip de atac este atacul „evil twin AP”?",
+  answers: [
+    "DDoS",
+    "MITM",
+    "Radio interference",
+    "Wireless intruder",
+    "DoS"
+  ],
+  correctIndex: 1
+},
+{
+  question: "Politica unei firme presupune că angajații nu pot avea cuptoare cu microunde în birouri, ci le pot folosi doar pe cele de la cafeterie. Ce risc de securitate wireless încearcă firma respectivă să evite?",
+  answers: [
+    "interferența accidentală a semnalelor",
+    "configurarea greșită a echipamentelor wireless",
+    "interceptarea datelor",
+    "interceptarea parolelor",
+    "instalarea unor AP-uri wireless false"
+  ],
+  correctIndex: 0
+},
+{
+  question: "Ce metodă de acces folosește un AP wireless pentru a permite conectivitatea mai multor utilizatori și accesul distribuit?",
+  answers: [
+    "Sondare",
+    "CSMA/CA",
+    "Acces direct",
+    "Token passing",
+    "CSMA/CD"
+  ],
+  correctIndex: 1
+},
+{
+  question: "Care dintre următoarele standarde 802.11 se numește „WiGig”, oferind lățimi de bandă până la 7 Gbps?",
+  answers: [
+    "802.11ab",
+    "802.11ae",
+    "802.11ac",
+    "802.11ad",
+    "802.11az"
+  ],
+  correctIndex: 3
+},
+{
+  question: "Care este ordinea în „roata securității” wireless LAN?",
+  answers: [
+    "Monitor > Improve > Test > Secure",
+    "Secure > Monitor > Test > Improve",
+    "Secure > Test > Monitor > Improve",
+    "Monitor > Test > Improve > Secure",
+    "Secure > Test > Improve > Monitor"
+  ],
+  correctIndex: 1
+},
+{
+  question: "Care dintre următoarele afirmații este adevărată cu privire la termenul Wi-Fi?",
+  answers: [
+    "Conceptul de ETSI",
+    "O abreviere de la “wireless widelity”",
+    "Conceptul de ANSI",
+    "Conceptul de IEEE și este o abreviere de la “wireless fidelity”",
+    "Conceptul de Wi-Fi Alliance"
+  ],
+  correctIndex: 4
+}
+
+
+
+
+    ];
+
+    function buildQuiz() {
+      const quizDiv = document.getElementById('quiz');
+      questions.forEach((q, qIndex) => {
+        const container = document.createElement('div');
+        container.classList.add('question-container');
+
+        const title = document.createElement('div');
+        title.classList.add('question-title');
+        title.textContent = `${qIndex + 1}. ${q.question}`;
+        container.appendChild(title);
+
+        const corrects = Array.isArray(q.correctIndex) ? q.correctIndex : [q.correctIndex];
+        const isMulti = corrects.length > 1;
+        container.selected = [];
+        let checkBtn = null;
+
+        // Creează variantele de răspuns
+        q.answers.forEach((answer, aIndex) => {
+          const letter = String.fromCharCode(97 + aIndex);
+          const ansDiv = document.createElement('div');
+          ansDiv.classList.add('answer');
+          ansDiv.textContent = `${letter}) ${answer}`;
+          ansDiv.addEventListener('click', () => {
+            if (!isMulti) {
+              if (container.answered) return;
+              container.answered = true;
+              if (corrects.includes(aIndex)) ansDiv.classList.add('correct');
+              else ansDiv.classList.add('incorrect');
+              corrects.forEach(ci => container.querySelectorAll('.answer')[ci].classList.add('correct'));
+            } else {
+              if (container.checked) return;
+              const idx = container.selected.indexOf(aIndex);
+              if (idx > -1) {
+                container.selected.splice(idx, 1);
+                ansDiv.classList.remove('selected');
+              } else {
+                container.selected.push(aIndex);
+                ansDiv.classList.add('selected');
+              }
+              if (checkBtn) checkBtn.disabled = container.selected.length === 0;
+            }
+          });
+          container.appendChild(ansDiv);
+        });
+
+        // Buton de verificare pentru întrebări multiple
+        if (isMulti) {
+          checkBtn = document.createElement('button');
+          checkBtn.textContent = 'Verifică răspunsurile';
+          checkBtn.classList.add('check-btn');
+          checkBtn.disabled = true;
+          checkBtn.addEventListener('click', () => {
+            container.checked = true;
+            container.querySelectorAll('.answer').forEach((ansDiv, idx) => {
+              if (corrects.includes(idx)) ansDiv.classList.add('correct');
+              else if (container.selected.includes(idx)) ansDiv.classList.add('incorrect');
+              ansDiv.classList.remove('selected');
+            });
+            checkBtn.disabled = true;
+          });
+          container.appendChild(checkBtn);
+        }
+
+        quizDiv.appendChild(container);
+      });
+    }
+
+    buildQuiz();
+  </script>
+</body>
+</html>
