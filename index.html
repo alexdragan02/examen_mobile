@@ -805,9 +805,120 @@
           "Black hat"
         ],
         correctIndex: 2
+      },
+      {
+        question: "Ce tip de cod malițios infectează dispozitivele și nu are abilitatea să se multiplice sau să se răspândească în afara sistemului infectat de unul singur?",
+        answers: [
+          "Spyware",
+          "Virus",
+          "Trojan",
+          "Adware",
+          "Rootkit"
+        ],
+        correctIndex: 1
+      },
+      {
+        question: "Spune trei obiective pe care le are securitatea informației:",
+        answers: [
+          "Disponibilitate",
+          "Autentificare",
+          "Integritate",
+          "Non-repudiere",
+          "Confidențialitate",
+          "Audit"
+        ],
+        correctIndex: [0,2,4]
+      },
+      {
+        question: "Ce informații sunt necesare pentru a hackui un telefon mobil?",
+        answers: [
+          "PIN și PUK",
+          "MIN și ESN",
+          "IMEI și ESN",
+          "SIM și ICCID",
+          "MSISDN și IMSI"
+        ],
+        correctIndex: 1
+      },
+      {
+        question: "Ce tip de informație este unic pe orice tip de card wireless din lume?",
+        answers: [
+          "UUID",
+          "PIN",
+          "Adresă MAC",
+          "Serial number",
+          "SSID"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Care termeni sunt folosiți pentru a descrie procesul de a descoperi o rețea wireless?",
+        answers: [
+          "War driving",
+          "War chaining",
+          "War walking",
+          "War jamming",
+          "War flying"
+        ],
+        correctIndex: [0,2,4]
+      },
+      {
+        question: "Cod malițios care se multiplică singur și se transmite singur, trimis de obicei pe e-mail este:",
+        answers: [
+          "Vierme (worm)",
+          "Virus",
+          "Trojan",
+          "Adware",
+          "Rootkit"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Ce tehnică trebuie să folosească un atacator pentru a forța un dispozitiv wireless să se deconecteze de la rețea?",
+        answers: [
+          "Replay attack",
+          "DoS attack",
+          "RF Jamming",
+          "Man-in-the-middle",
+          "Deauthentication attack"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Ce este mai probabil ca un hacker wireless tânăr să facă?",
+        answers: [
+          "War camping",
+          "War shipping",
+          "War walking",
+          "War flying",
+          "War driving"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Ce înseamnă termenul SPAM?",
+        answers: [
+          "Newsletter",
+          "Bulk email",
+          "Mesaje electronice nedorite și nesolicitate venite grămadă",
+          "Email marketing",
+          "Broadcast"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Ce tehnică utilizează un radio 802.11a?",
+        answers: [
+          "FHSS",
+          "DSSS",
+          "CCK",
+          "TDMA",
+          "OFDM"
+        ],
+        correctIndex: 4
       }
 ];
-    const subtestSizes = [10,10,10,11,10,10];
+    const subtestSizes = [10,10,10,11,10,10,10];
     const subtestStarts = subtestSizes.map((_,i,arr)=>
       arr.slice(0,i).reduce((a,b)=>a+b,0)
     );
