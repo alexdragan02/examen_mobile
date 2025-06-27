@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Quizescu — Wizard pe pași</title>
+  <title>Quizescu — Selectează Subtest</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -37,7 +37,7 @@
     }
     header h1 { margin: 0; font-size: 1.8rem; }
 
-    /* afişare pas curent */
+    /* INDICATOR PAS */
     #floating-step {
       position: fixed; top: 20px; right: 20px;
       background: rgba(66,133,244,0.9); color: #fff;
@@ -45,20 +45,22 @@
       font-weight: 500; pointer-events: none; z-index: 10;
     }
 
-    /* bara progres (opțional) */
-    #progress-bar {
-      width: 100%; max-width: 800px; height: 8px;
-      background: #ddd; border-radius: 4px;
-      overflow: hidden; margin: 1rem 0 0.5rem;
+    /* SELECȚIE SUBTESTE */
+    #selection {
+      width: 100%; max-width: 800px; padding: 1rem;
+      margin-top: 1rem;
     }
-    #progress {
-      width: 0%; height: 100%;
-      background: var(--clr-accent);
-      transition: width 0.4s ease;
+    .subtest-card {
+      background: #fff; border-radius: var(--radius);
+      padding: 1rem; margin-bottom: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      display: flex; justify-content: space-between; align-items: center;
     }
+    .subtest-card p { margin: 0; }
 
+    /* QUIZ */
     #quiz {
-      width: 100%; max-width: 800px; padding: 0 1rem;
+      width: 100%; max-width: 800px; padding: 0 1rem; margin-top: 1rem;
     }
     .question-container {
       background: var(--clr-card-bg);
@@ -72,54 +74,43 @@
       font-size: 1.25rem; font-weight: 500;
       margin-bottom: 1rem;
     }
-
-    /* tabel răspunsuri */
     .answers-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0 8px;
-      margin-bottom: 1rem;
+      width: 100%; border-collapse: separate;
+      border-spacing: 0 8px; margin-bottom: 1rem;
     }
     .answers-table td.answer {
-      padding: 14px 18px;
-      border: 2px solid #ddd;
-      border-radius: var(--radius);
-      cursor: pointer;
-      background: #fff;
-      transition: background var(--transition), border-color var(--transition), transform 0.2s;
+      padding: 14px 18px; border: 2px solid #ddd;
+      border-radius: var(--radius); background: #fff;
+      cursor: pointer; transition: background var(--transition), border-color var(--transition), transform 0.2s;
       user-select: none;
     }
     .answers-table td.answer:hover {
-      background: #fafafa;
-      border-color: #ccc;
-      transform: translateY(-2px);
+      background: #fafafa; border-color: #ccc; transform: translateY(-2px);
     }
     .answers-table td.answer.selected {
-      background: #e8f0fe;
-      border-color: var(--clr-accent);
+      background: #e8f0fe; border-color: var(--clr-accent);
     }
     .answers-table td.answer.correct {
-      background: #e0f7e9;
-      border-color: var(--clr-success);
+      background: #e0f7e9; border-color: var(--clr-success);
     }
     .answers-table td.answer.incorrect {
-      background: #ffeaea;
-      border-color: var(--clr-error);
+      background: #ffeaea; border-color: var(--clr-error);
     }
 
     .controls {
       display: flex; justify-content: flex-end; gap: 0.5rem;
     }
     .btn {
-      padding: 0.6rem 1.2rem;
-      border: none; border-radius: var(--radius);
+      padding: 0.6rem 1.2rem; border: none; border-radius: var(--radius);
       font-size: 0.95rem; font-weight: 500; cursor: pointer;
       transition: background var(--transition), box-shadow 0.2s;
     }
     .btn-check {
       background: var(--clr-accent); color: #fff;
     }
-    .btn-check:disabled { background: #a0c3ff; cursor: not-allowed; }
+    .btn-check:disabled {
+      background: #a0c3ff; cursor: not-allowed;
+    }
     .btn-check:hover:enabled {
       background: var(--clr-accent-hover);
       box-shadow: 0 4px 12px rgba(66,133,244,0.3);
@@ -127,20 +118,41 @@
     .btn-reset {
       background: #fff; color: #666; border: 2px solid #ddd;
     }
-    .btn-reset:hover { background: #f7f7f7; }
+    .btn-reset:hover {
+      background: #f7f7f7;
+    }
+    .btn-finish {
+      background: var(--clr-success); color: #fff;
+      margin-top: 1rem;
+    }
+    .btn-finish:hover {
+      background: #2c8c47;
+    }
 
-    #navigation { width: 100%; max-width: 800px; padding: 0 1rem; margin-top: 0.5rem; }
-    #finish-container { width: 100%; max-width: 800px; padding: 1rem; text-align: center; }
-    #result { font-size: 1.2rem; font-weight: 500; margin-top: 1rem; }
+    #navigation {
+      width: 100%; max-width: 800px; padding: 0 1rem; margin-bottom: 2rem;
+    }
+    #finish-container {
+      width: 100%; max-width: 800px; padding: 1rem; text-align: center;
+    }
+    #finish-container ul {
+      list-style: none; padding: 0; margin: 1rem 0; text-align: left; display: inline-block;
+    }
+    #finish-container li { margin: 0.3rem 0; }
+    #finish-container p { font-weight: 500; margin-top: 1rem; }
   </style>
 </head>
 <body>
 
-  <div id="floating-step">Întrebări: 1 / 0</div>
+  <div id="floating-step">Selectează un subtest</div>
   <header><h1>🎯 Quizescu</h1></header>
-  <div id="progress-bar"><div id="progress"></div></div>
-  <main id="quiz"></main>
-  <div id="navigation" class="controls"></div>
+
+  <!-- selecție subteste -->
+  <div id="selection"></div>
+
+  <!-- quiz -->
+  <main id="quiz" style="display:none;"></main>
+  <div id="navigation" class="controls" style="display:none;"></div>
   <div id="finish-container"></div>
 
   <script>
@@ -578,134 +590,167 @@
   ],
   correctIndex: 4
 }];
-    let score = 0, currentIndex = 0;
-    const total = questions.length;
+    const subtestSizes = [10,10,10,11];
+    const subtestStarts = subtestSizes.map((_,i,arr)=>
+      arr.slice(0,i).reduce((a,b)=>a+b,0)
+    );
+    const numSub = subtestSizes.length;
 
-    const stepEl = document.getElementById('floating-step');
-    const progressEl = document.getElementById('progress');
-    const quizEl = document.getElementById('quiz');
-    const navEl = document.getElementById('navigation');
-    const finishEl = document.getElementById('finish-container');
+    let currentSub = null, idxInSub = 0;
+    const scoreSub = Array(numSub).fill(0);
+    const attemptedSub = Array(numSub).fill(false);
 
-    function updateStep(idx) {
-      stepEl.textContent = `Întrebări: ${idx+1} / ${total}`;
-      const pct = Math.round((idx / total)*100);
-      progressEl.style.width = pct+'%';
+    const stepEl      = document.getElementById('floating-step');
+    const selEl       = document.getElementById('selection');
+    const quizEl      = document.getElementById('quiz');
+    const navEl       = document.getElementById('navigation');
+    const finishEl    = document.getElementById('finish-container');
+
+    function showSelection() {
+      // UI vizibilitate
+      selEl.style.display = ''; quizEl.style.display = 'none';
+      navEl.style.display = 'none'; finishEl.innerHTML = '';
+      stepEl.textContent = 'Selectează un subtest';
+
+      selEl.innerHTML = '';
+      subtestSizes.forEach((sz,i) => {
+        const card = document.createElement('div');
+        card.className = 'subtest-card';
+        const info = document.createElement('p');
+        info.innerHTML = `<strong>Subtestul ${i+1}</strong> (${sz} întrebări)`;
+        card.appendChild(info);
+
+        if (attemptedSub[i]) {
+          const st = document.createElement('p');
+          st.textContent = `Punctaj: ${scoreSub[i]} / ${sz}`;
+          card.appendChild(st);
+          const btn = document.createElement('button');
+          btn.className = 'btn btn-check';
+          btn.textContent = 'Refă subtest';
+          btn.onclick = ()=> startSubtest(i);
+          card.appendChild(btn);
+        } else {
+          const btn = document.createElement('button');
+          btn.className = 'btn btn-check';
+          btn.textContent = 'Începe subtest';
+          btn.onclick = ()=> startSubtest(i);
+          card.appendChild(btn);
+        }
+        selEl.appendChild(card);
+      });
+
+      if (attemptedSub.every(v=>v)) {
+        const btnAll = document.createElement('button');
+        btnAll.className = 'btn btn-finish';
+        btnAll.textContent = 'Finalizează quiz';
+        btnAll.onclick = renderFinalSummary;
+        selEl.appendChild(btnAll);
+      }
     }
 
-    function finishQuiz() {
-      quizEl.innerHTML = '';
-      navEl.innerHTML = '';
-      const passed = score >= total/2;
-      finishEl.innerHTML = `<div id="result">${
-        passed? 'Ai trecut sefule da ai invatat mecanic! 🎉':'Mai exersează! Esti terminat  ❌'
-      } Punctaj: ${score} / ${total}</div>`;
+    function startSubtest(i) {
+      currentSub = i; idxInSub = 0; scoreSub[i] = 0;
+      selEl.style.display = 'none';
+      quizEl.style.display = '';
+      navEl.style.display = '';
+      renderQuestion();
     }
 
-    function showQuestion(idx) {
-      quizEl.innerHTML = '';
-      navEl.innerHTML = '';
-      updateStep(idx);
+    function updateStep() {
+      const done = idxInSub+1;
+      const size = subtestSizes[currentSub];
+      stepEl.textContent =
+        `Subtestul ${currentSub+1}: Întrebări ${done} / ${size}`;
+    }
 
-      const q = questions[idx];
+    function renderQuestion() {
+      quizEl.innerHTML = ''; navEl.innerHTML = ''; finishEl.innerHTML = '';
+      updateStep();
+
+      const abs = subtestStarts[currentSub] + idxInSub;
+      const q   = questions[abs];
+      const size= subtestSizes[currentSub];
+
+      // întrebare
       const card = document.createElement('div');
       card.className = 'question-container';
-      card.checked = false;
-      card.selected = [];
 
-      // Titlu
       const title = document.createElement('div');
       title.className = 'question-title';
-      title.textContent = `${idx+1}. ${q.question}`;
+      title.textContent = `${abs+1}. ${q.question}`;
       card.appendChild(title);
 
-      // Tabel răspunsuri
+      // tabel răspunsuri
       const table = document.createElement('table');
       table.className = 'answers-table';
       card.appendChild(table);
 
       const corrects = Array.isArray(q.correctIndex)
-                        ? q.correctIndex
-                        : [q.correctIndex];
+                        ? q.correctIndex : [q.correctIndex];
+      let selected = [];
 
-      q.answers.forEach((ans,j) => {
+      q.answers.forEach((ans,j)=>{
         const row = document.createElement('tr');
-        const cell = document.createElement('td');
+        const cell= document.createElement('td');
         cell.className = 'answer';
         cell.textContent = String.fromCharCode(97+j)+') '+ans;
-
-        cell.addEventListener('click', () => {
-          // single-choice
-          if (corrects.length === 1) {
-            if (card.checked) return;
-            card.checked = true;
+        cell.onclick = ()=>{
+          if (corrects.length===1) {
+            if (card.dataset.answered) return;
+            card.dataset.answered = 'true';
             const ok = corrects.includes(j);
-            if (ok) {
-              cell.classList.add('correct');
-              score++;
-            } else {
+            if (ok) { cell.classList.add('correct'); scoreSub[currentSub]++; }
+            else {
               cell.classList.add('incorrect');
               table.rows[corrects[0]].cells[0].classList.add('correct');
             }
             nextBtn.disabled = false;
+          } else {
+            if (card.dataset.answered) return;
+            cell.classList.toggle('selected');
+            selected = Array.from(table.querySelectorAll('.selected'))
+                            .map(c => c.parentElement.rowIndex);
+            checkBtn.disabled = selected.length===0;
           }
-          // multi-choice
-          else {
-            if (card.checked) return;
-            if (cell.classList.contains('selected')) {
-              cell.classList.remove('selected');
-              card.selected = card.selected.filter(x=>x!==j);
-            } else {
-              cell.classList.add('selected');
-              card.selected.push(j);
-            }
-            checkBtn.disabled = card.selected.length === 0;
-          }
-        });
-
+        };
         row.appendChild(cell);
         table.appendChild(row);
       });
 
+      card.appendChild(table);
+
       // butoane multi-choice
       let checkBtn;
-      if (corrects.length > 1) {
+      if (corrects.length>1) {
         checkBtn = document.createElement('button');
         checkBtn.className = 'btn btn-check';
         checkBtn.textContent = 'Verifică';
         checkBtn.disabled = true;
-        checkBtn.addEventListener('click', () => {
-          card.checked = true;
-          const sel = card.selected.slice().sort().join(',');
-          const cor = corrects.slice().sort().join(',');
-          if (sel===cor) {
-            score++;
-          }
+        checkBtn.onclick = ()=>{
+          card.dataset.answered = 'true';
+          selected.sort(); corrects.sort();
+          if (selected.join()==corrects.join())
+            scoreSub[currentSub]++;
           Array.from(table.rows).forEach((r,i)=>{
             const c = r.cells[0];
             if (corrects.includes(i)) c.classList.add('correct');
-            else if (card.selected.includes(i)) c.classList.add('incorrect');
+            else if (selected.includes(i)) c.classList.add('incorrect');
           });
-          nextBtn.disabled = false;
-        });
-
+          checkBtn.disabled = true;
+          nextBtn.disabled  = false;
+        };
         const resetBtn = document.createElement('button');
         resetBtn.className = 'btn btn-reset';
         resetBtn.textContent = 'Reset';
-        resetBtn.addEventListener('click', () => {
-          card.checked = false;
-          card.selected = [];
-          Array.from(table.rows).forEach(r => {
+        resetBtn.onclick = ()=>{
+          delete card.dataset.answered;
+          Array.from(table.rows).forEach(r=>{
             r.cells[0].classList.remove('selected','correct','incorrect');
           });
+          selected = [];
           checkBtn.disabled = true;
-          nextBtn.disabled = true;
-          // dacă s-a dat deja punctaj, îl anulăm
-          if (nextBtn.disabled===false) {
-            score = Math.max(0, score-1);
-          }
-        });
-
+          nextBtn.disabled  = true;
+        };
         const ctrl = document.createElement('div');
         ctrl.className = 'controls';
         ctrl.appendChild(checkBtn);
@@ -715,24 +760,70 @@
 
       quizEl.appendChild(card);
 
-      // buton Next / Finalizează
+      // buton next/finalizează subtest
       const nextBtn = document.createElement('button');
       nextBtn.className = 'btn btn-check';
-      nextBtn.textContent = idx<total-1 ? 'Următorul' : 'Finalizează Quiz';
+      nextBtn.textContent =
+        (idxInSub < size-1) ? 'Următoarea'
+        : 'Finalizează subtest';
       nextBtn.disabled = true;
-      nextBtn.addEventListener('click', ()=> {
-        if (idx<total-1) {
-          currentIndex++;
-          showQuestion(currentIndex);
+      nextBtn.onclick = ()=>{
+        if (idxInSub < size-1) {
+          idxInSub++;
+          renderQuestion();
         } else {
-          finishQuiz();
+          renderSubtestSummary();
         }
-      });
+      };
       navEl.appendChild(nextBtn);
     }
 
-    // pornire
-    showQuestion(0);
+    function renderSubtestSummary() {
+      quizEl.innerHTML = ''; navEl.innerHTML = ''; finishEl.innerHTML = '';
+      attemptedSub[currentSub] = true;
+
+      const size = subtestSizes[currentSub];
+      const sc   = scoreSub[currentSub];
+      const msg  = document.createElement('div');
+      msg.className = 'question-container';
+      msg.innerHTML = `
+        <p><strong>Ai finalizat subtestul ${currentSub+1}:</strong><br>
+        Punctaj: ${sc} / ${size}</p>
+      `;
+      quizEl.appendChild(msg);
+
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-check';
+      btn.textContent = 'Finalizează subtest';
+      btn.onclick = showSelection;
+      navEl.appendChild(btn);
+
+      stepEl.textContent =
+        `Subtestul ${currentSub+1} complet.`;
+    }
+
+    function renderFinalSummary() {
+      selEl.style.display = 'none';
+      quizEl.style.display = 'none';
+      navEl.style.display = 'none';
+      finishEl.innerHTML = '';
+      stepEl.textContent = 'Quiz finalizat!';
+
+      const ul = document.createElement('ul');
+      subtestSizes.forEach((sz,i)=>{
+        const li = document.createElement('li');
+        li.textContent = `Subtestul ${i+1}: ${scoreSub[i]} / ${sz}`;
+        ul.appendChild(li);
+      });
+      const total = scoreSub.reduce((a,b)=>a+b,0);
+      finishEl.appendChild(ul);
+      const p = document.createElement('p');
+      p.textContent = `Scor total: ${total} / ${questions.length}`;
+      finishEl.appendChild(p);
+    }
+
+    // start
+    showSelection();
   </script>
 </body>
 </html>
