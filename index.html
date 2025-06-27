@@ -2,10 +2,11 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Quiz Interactiv</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
     body {
       margin: 0;
       padding: 0;
@@ -16,6 +17,7 @@
       flex-direction: column;
       align-items: center;
     }
+
     #header {
       width: 100%;
       max-width: 800px;
@@ -27,20 +29,34 @@
       border-bottom-left-radius: 12px;
       border-bottom-right-radius: 12px;
     }
+
     #header h1 {
       margin: 0 0 8px;
       font-weight: 700;
       font-size: 1.6rem;
     }
-    #score {
-      font-size: 1.2rem;
+
+    /* Floating score box */
+    #floating-score {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(66,133,244,0.9);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       font-weight: 500;
+      z-index: 1000;
+      pointer-events: none;
     }
+
     #quiz {
       width: 100%;
       max-width: 800px;
       margin: 20px 0;
     }
+
     .question-container {
       background: #fff;
       border-radius: 12px;
@@ -128,6 +144,7 @@
     .btn-finish {
       background: #34a853;
       color: #fff;
+      margin-bottom: 40px;
     }
     .btn-finish:hover:not(:disabled) {
       background: #2c8c47;
@@ -140,8 +157,8 @@
     #finish-container {
       width: 100%;
       max-width: 800px;
-      margin-bottom: 40px;
       text-align: center;
+      margin-bottom: 40px;
     }
     #result {
       margin-top: 16px;
@@ -151,15 +168,19 @@
   </style>
 </head>
 <body>
+
+  <div id="floating-score">Puncte: 0 / 0</div>
+
   <div id="header">
     <h1>Quiz Interactiv</h1>
-    <div id="score">Puncte: 0 / 0</div>
   </div>
+
   <div id="quiz"></div>
+
   <div id="finish-container"></div>
 
   <script>
-         const questions = [
+    const questions = [
       {
         question: "Ce caracteristică a favorizat adoptarea standardului 802.11g în favoarea standardului 802.11a?",
         answers: [
@@ -593,12 +614,13 @@
   ],
   correctIndex: 4
 }];
+
     let score = 0;
     const total = questions.length;
 
     function updateScore() {
-      document.getElementById('score')
-              .textContent = `Puncte: ${score} / ${total}`;
+      const text = `Puncte: ${score} / ${total}`;
+      document.getElementById('floating-score').textContent = text;
     }
 
     function buildQuiz() {
@@ -610,7 +632,7 @@
         container.className = 'question-container';
         container.answeredCorrectly = false;
 
-        // Titlu întrebare
+        // Titlu
         const title = document.createElement('div');
         title.className = 'question-title';
         title.textContent = `${qIndex + 1}. ${q.question}`;
@@ -627,7 +649,6 @@
         const isMulti = corrects.length > 1;
         container.selected = [];
 
-        // Creare rânduri răspunsuri
         q.answers.forEach((answer, aIndex) => {
           const letter = String.fromCharCode(97 + aIndex);
           const row = document.createElement('tr');
@@ -639,8 +660,8 @@
             if (!isMulti) {
               if (container.answered) return;
               container.answered = true;
-              const correct = corrects.includes(aIndex);
-              if (correct) {
+              const ok = corrects.includes(aIndex);
+              if (ok) {
                 cell.classList.add('correct');
                 if (!container.answeredCorrectly) {
                   score++;
@@ -671,7 +692,7 @@
           answersTable.appendChild(row);
         });
 
-        // Controale (Verifică + Reset)
+        // Controale
         const controls = document.createElement('div');
         controls.className = 'controls';
 
@@ -685,8 +706,7 @@
             container.checked = true;
             const sel = container.selected.slice().sort().join();
             const crt = corrects.slice().sort().join();
-            const ok = sel === crt;
-            if (ok && !container.answeredCorrectly) {
+            if (sel === crt && !container.answeredCorrectly) {
               score++;
               container.answeredCorrectly = true;
               updateScore();
@@ -717,7 +737,7 @@
           container.selected = [];
           Array.from(answersTable.rows).forEach(r => {
             const c = r.cells[0];
-            c.classList.remove('correct', 'incorrect', 'selected');
+            c.classList.remove('correct','incorrect','selected');
           });
           if (checkBtn) checkBtn.disabled = true;
         });
@@ -734,17 +754,15 @@
       finishBtn.className = 'btn btn-finish';
       finishBtn.textContent = 'Finalizează Quiz';
       finishBtn.addEventListener('click', () => {
-        const passed = score >= total / 2;
-        const resultText = passed
-          ? `Ai trecut! Punctaj: ${score} / ${total}`
-          : `Nu ai trecut. Punctaj: ${score} / ${total}`;
-        resultDiv.textContent = resultText;
+        const passed = score >= total/2;
+        const resultDiv = document.getElementById('result');
+        resultDiv.textContent = passed
+          ? `Ai trecut! Bravo sefule ai invatat mecanic Punctaj: ${score} / ${total}`
+          : `Nu ai trecut. Esti terminat pe bune na punctaj: ${score} / ${total}`;
         finishBtn.disabled = true;
       });
-
       const resultDiv = document.createElement('div');
       resultDiv.id = 'result';
-
       finishContainer.appendChild(finishBtn);
       finishContainer.appendChild(resultDiv);
     }
