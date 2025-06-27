@@ -5,53 +5,161 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Interactiv</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f7fa; padding: 20px; }
-    #quiz { max-width: 800px; margin: auto; }
-    .question-container { 
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 6px;
-      padding: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .question-title { 
-      font-size: 1.1rem; 
-      font-weight: bold;
-      margin-bottom: 12px;
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f0f4f8;
+      font-family: 'Roboto', sans-serif;
       color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .answer { 
-      padding: 10px 12px; 
-      margin: 6px 0; 
-      border: 1px solid #ccc; 
-      border-radius: 4px; 
-      cursor: pointer; 
-      transition: background 0.2s, border-color 0.2s;
+    #header {
+      width: 100%;
+      max-width: 800px;
+      padding: 20px;
+      text-align: center;
+      background: linear-gradient(90deg, #4e89ff, #8f78ff);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
     }
-    .answer:hover { background-color: #f0f0f0; border-color: #bdbdbd; }
-    .answer.correct { background-color: #c8e6c9; border-color: #66bb6a; }
-    .answer.incorrect { background-color: #ffcdd2; border-color: #e57373; }
-    .answer.selected { background-color: #e3f2fd; border-color: #42a5f5; }
-    .check-btn { 
-      display: inline-block; 
-      margin-top: 10px; 
-      padding: 8px 16px; 
-      background: #42a5f5; 
-      color: #fff; 
-      border: none; 
-      border-radius: 4px; 
+    #header h1 {
+      margin: 0 0 8px;
+      font-weight: 700;
+      font-size: 1.6rem;
+    }
+    #score {
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+    #quiz {
+      width: 100%;
+      max-width: 800px;
+      margin: 20px 0;
+    }
+    .question-container {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
+    }
+    .question-container:hover {
+      transform: translateY(-4px);
+    }
+    .question-title {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: #1e213a;
+    }
+    .answers-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+      margin-bottom: 16px;
+    }
+    .answers-table td.answer {
+      padding: 14px 18px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 0.9rem;
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.2s;
+      background: #fff;
+      user-select: none;
     }
-    .check-btn:disabled { background: #90caf9; cursor: not-allowed; }
+    .answers-table td.answer:hover {
+      background-color: #fafafa;
+      border-color: #ccc;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .answers-table td.answer.correct {
+      background-color: #e0f7e9;
+      border-color: #34a853;
+    }
+    .answers-table td.answer.incorrect {
+      background-color: #ffeaea;
+      border-color: #d93025;
+    }
+    .answers-table td.answer.selected {
+      background-color: #e8f0fe;
+      border-color: #4285f4;
+    }
+    .controls {
+      margin-top: 12px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: background 0.3s, box-shadow 0.2s;
+    }
+    .btn-check {
+      background: #4285f4;
+      color: #fff;
+    }
+    .btn-check:hover:not(:disabled) {
+      background: #3367d6;
+      box-shadow: 0 4px 12px rgba(66,133,244,0.35);
+    }
+    .btn-check:disabled {
+      background: #a0c3ff;
+      cursor: not-allowed;
+    }
+    .btn-reset {
+      background: #fff;
+      color: #555;
+      border: 2px solid #ddd;
+    }
+    .btn-reset:hover {
+      background: #f7f7f7;
+    }
+    .btn-finish {
+      background: #34a853;
+      color: #fff;
+    }
+    .btn-finish:hover:not(:disabled) {
+      background: #2c8c47;
+      box-shadow: 0 4px 12px rgba(52,168,83,0.35);
+    }
+    .btn-finish:disabled {
+      background: #a8d5b5;
+      cursor: not-allowed;
+    }
+    #finish-container {
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    #result {
+      margin-top: 16px;
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
+  <div id="header">
+    <h1>Quiz Interactiv</h1>
+    <div id="score">Puncte: 0 / 0</div>
+  </div>
   <div id="quiz"></div>
+  <div id="finish-container"></div>
 
   <script>
-   const questions = [
+         const questions = [
       {
         question: "Ce caracteristică a favorizat adoptarea standardului 802.11g în favoarea standardului 802.11a?",
         answers: [
@@ -484,81 +592,165 @@
     "Conceptul de Wi-Fi Alliance"
   ],
   correctIndex: 4
-}
+}];
+    let score = 0;
+    const total = questions.length;
 
-
-
-
-    ];
+    function updateScore() {
+      document.getElementById('score')
+              .textContent = `Puncte: ${score} / ${total}`;
+    }
 
     function buildQuiz() {
       const quizDiv = document.getElementById('quiz');
+      updateScore();
+
       questions.forEach((q, qIndex) => {
         const container = document.createElement('div');
-        container.classList.add('question-container');
+        container.className = 'question-container';
+        container.answeredCorrectly = false;
 
+        // Titlu întrebare
         const title = document.createElement('div');
-        title.classList.add('question-title');
+        title.className = 'question-title';
         title.textContent = `${qIndex + 1}. ${q.question}`;
         container.appendChild(title);
 
-        const corrects = Array.isArray(q.correctIndex) ? q.correctIndex : [q.correctIndex];
+        // Tabel răspunsuri
+        const answersTable = document.createElement('table');
+        answersTable.className = 'answers-table';
+        container.appendChild(answersTable);
+
+        const corrects = Array.isArray(q.correctIndex)
+                         ? q.correctIndex
+                         : [q.correctIndex];
         const isMulti = corrects.length > 1;
         container.selected = [];
-        let checkBtn = null;
 
-        // Creează variantele de răspuns
+        // Creare rânduri răspunsuri
         q.answers.forEach((answer, aIndex) => {
           const letter = String.fromCharCode(97 + aIndex);
-          const ansDiv = document.createElement('div');
-          ansDiv.classList.add('answer');
-          ansDiv.textContent = `${letter}) ${answer}`;
-          ansDiv.addEventListener('click', () => {
+          const row = document.createElement('tr');
+          const cell = document.createElement('td');
+          cell.className = 'answer';
+          cell.textContent = `${letter}) ${answer}`;
+
+          cell.addEventListener('click', () => {
             if (!isMulti) {
               if (container.answered) return;
               container.answered = true;
-              if (corrects.includes(aIndex)) ansDiv.classList.add('correct');
-              else ansDiv.classList.add('incorrect');
-              corrects.forEach(ci => container.querySelectorAll('.answer')[ci].classList.add('correct'));
+              const correct = corrects.includes(aIndex);
+              if (correct) {
+                cell.classList.add('correct');
+                if (!container.answeredCorrectly) {
+                  score++;
+                  container.answeredCorrectly = true;
+                  updateScore();
+                }
+              } else {
+                cell.classList.add('incorrect');
+              }
+              corrects.forEach(ci => {
+                answersTable.rows[ci].cells[0].classList.add('correct');
+              });
             } else {
               if (container.checked) return;
               const idx = container.selected.indexOf(aIndex);
               if (idx > -1) {
                 container.selected.splice(idx, 1);
-                ansDiv.classList.remove('selected');
+                cell.classList.remove('selected');
               } else {
                 container.selected.push(aIndex);
-                ansDiv.classList.add('selected');
+                cell.classList.add('selected');
               }
-              if (checkBtn) checkBtn.disabled = container.selected.length === 0;
+              checkBtn.disabled = container.selected.length === 0;
             }
           });
-          container.appendChild(ansDiv);
+
+          row.appendChild(cell);
+          answersTable.appendChild(row);
         });
 
-        // Buton de verificare pentru întrebări multiple
+        // Controale (Verifică + Reset)
+        const controls = document.createElement('div');
+        controls.className = 'controls';
+
+        let checkBtn = null;
         if (isMulti) {
           checkBtn = document.createElement('button');
-          checkBtn.textContent = 'Verifică răspunsurile';
-          checkBtn.classList.add('check-btn');
+          checkBtn.className = 'btn btn-check';
+          checkBtn.textContent = 'Verifică';
           checkBtn.disabled = true;
           checkBtn.addEventListener('click', () => {
             container.checked = true;
-            container.querySelectorAll('.answer').forEach((ansDiv, idx) => {
-              if (corrects.includes(idx)) ansDiv.classList.add('correct');
-              else if (container.selected.includes(idx)) ansDiv.classList.add('incorrect');
-              ansDiv.classList.remove('selected');
+            const sel = container.selected.slice().sort().join();
+            const crt = corrects.slice().sort().join();
+            const ok = sel === crt;
+            if (ok && !container.answeredCorrectly) {
+              score++;
+              container.answeredCorrectly = true;
+              updateScore();
+            }
+            Array.from(answersTable.rows).forEach((r, idx) => {
+              const c = r.cells[0];
+              if (corrects.includes(idx)) c.classList.add('correct');
+              else if (container.selected.includes(idx))
+                c.classList.add('incorrect');
+              c.classList.remove('selected');
             });
             checkBtn.disabled = true;
           });
-          container.appendChild(checkBtn);
+          controls.appendChild(checkBtn);
         }
 
+        const resetBtn = document.createElement('button');
+        resetBtn.className = 'btn btn-reset';
+        resetBtn.textContent = 'Reset';
+        resetBtn.addEventListener('click', () => {
+          container.answered = false;
+          container.checked = false;
+          if (container.answeredCorrectly) {
+            score--;
+            container.answeredCorrectly = false;
+            updateScore();
+          }
+          container.selected = [];
+          Array.from(answersTable.rows).forEach(r => {
+            const c = r.cells[0];
+            c.classList.remove('correct', 'incorrect', 'selected');
+          });
+          if (checkBtn) checkBtn.disabled = true;
+        });
+        controls.appendChild(resetBtn);
+
+        container.appendChild(controls);
         quizDiv.appendChild(container);
       });
     }
 
+    function createFinishButton() {
+      const finishContainer = document.getElementById('finish-container');
+      const finishBtn = document.createElement('button');
+      finishBtn.className = 'btn btn-finish';
+      finishBtn.textContent = 'Finalizează Quiz';
+      finishBtn.addEventListener('click', () => {
+        const passed = score >= total / 2;
+        const resultText = passed
+          ? `Ai trecut! Punctaj: ${score} / ${total}`
+          : `Nu ai trecut. Punctaj: ${score} / ${total}`;
+        resultDiv.textContent = resultText;
+        finishBtn.disabled = true;
+      });
+
+      const resultDiv = document.createElement('div');
+      resultDiv.id = 'result';
+
+      finishContainer.appendChild(finishBtn);
+      finishContainer.appendChild(resultDiv);
+    }
+
     buildQuiz();
+    createFinishButton();
   </script>
 </body>
 </html>
