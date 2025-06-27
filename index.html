@@ -262,7 +262,7 @@
           "Un atacator are nevoie de acces fizic la cel puțin un echipament de rețea pentru a lansa un atac",
           "Dacă este dezactivat broadcast-ul SSID, un atacator trebuie întâi să „adulmeci” SSID-ul înainte de a se putea conecta"
         ],
-        correctIndex: [1,3]
+        correctIndex: [ 1, 3]
       },
       {
         question: "Ce caracteristică a securității wireless permite unui administrator de rețea să configureze un AP cu adresele MAC ale plăcilor de rețea astfel încât doar acele plăci să se conecteze la rețeaua wireless?",
@@ -589,8 +589,225 @@
     "Conceptul de Wi-Fi Alliance"
   ],
   correctIndex: 4
-}];
-    const subtestSizes = [10,10,10,11];
+}, {
+        question: "Ce se întâmplă cu semnalul unui wireless 802.11b când un copac veșnic verde este între transmitător și receptor?",
+        answers: [
+          "Este absorbit",
+          "Este reflectat",
+          "Este difrat",
+          "Se amplifică",
+          "Este atenuat"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Care sunt cei doi termeni corecți care măsoară câștigul antenei?",
+        answers: [
+          "dBi",
+          "dBd",
+          "dB",
+          "SNR",
+          "EIRP"
+        ],
+        correctIndex: [0,1,2]
+      },
+      {
+        question: "Indicativul dBi este un decibel în comparație cu...",
+        answers: [
+          "Radiator dipol",
+          "Radiator izotrop",
+          "Radiator direcțional",
+          "Radiator omnidirecțional de 1 m"
+        ],
+        correctIndex: 1
+      },
+      {
+        question: "Ce înseamnă RF?",
+        answers: [
+          "Roentgen Flux (flux Roentgen)",
+          "Relative Field (câmp relativ)",
+          "Radio Frequency (frecvență radio)",
+          "Radio Form (formă radio)"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Ce tip de modulație folosește 802.11b?",
+        answers: [
+          "DSSS",
+          "OFDM",
+          "PSK",
+          "CCK",
+          "QAM"
+        ],
+        correctIndex: 3
+      },
+      {
+        question: "Cum poate cineva să trimită mai multe date în atmosferă simultan?",
+        answers: [
+         
+          "Să mărească puterea de emisie",
+          "Să reducă banda de frecvență",
+           "Să folosească o modulație mai complexă",
+          "Să schimbe polarizarea semnalului"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Cum se numea înainte Wi-Fi Alliance?",
+        answers: [
+          
+          "Wi-Fi Consortium",
+          "WECA",
+          "IEEE 802.11b",
+          "Wireless Alliance"
+        ],
+        correctIndex: 1
+      },
+      {
+        question: "Ce sigiliu certifică interoperabilitatea într-un dispozitiv wireless?",
+        answers: [
+          "Wi-Fi Certified",
+          "WPA Certified",
+          "IEEE Certified",
+          "Bluetooth Logo"
+        ],
+        correctIndex: 0
+      },
+      {
+        question: "Ce unde vor parcurge distanța cea mai mare?",
+        answers: [
+          
+          "Unde scurte (SW)",
+          "Unde medii (MW)",
+          "Microvaluri",
+          "Infraroșu",
+          "Radio FM",
+        ],
+        correctIndex: 4
+      },
+      {
+        question: "Ce reglementează FCC și ETSI într-o rețea wireless?",
+        answers: [
+          "Numărul de canale și frecvențele permise",
+          "Puterea maximă de emisie",
+          "Tipul de modulație obligatoriu",
+          "Protocoalele de criptare",
+          "Lățimea de bandă suportată"
+        ],
+        correctIndex: [0,1]
+      }, {
+        question: "La ce termen legat de lățimea de bandă se referă fraza: “în orice zi, rețeaua mea wireless are o lățime de bandă redusă la”?",
+        answers: [
+          "11 Hz",
+          "11 MB",
+          "11 Kbps",
+          "11 Gbps",
+          "11 Mbps"
+        ],
+        correctIndex: 4
+      },
+      {
+        question: "Care dintre următoarele prezintă utilizarea corectă a unei rețele fără fir?",
+        answers: [
+          "Cablu Ethernet pentru desktop",
+          "Wi-Fi static în birou",
+          "Acces mobil pentru laptop și PDA",
+          "Folosirea unui router cu fir",
+          "Wi-Fi doar pentru smartphone"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Când un semnal wireless se schimbă sau se curbează în jurul unui obiect și creează o zonă de umbră, atunci avem:",
+        answers: [
+          "Reflexie",
+          "Scattering",
+          "Refracție",
+          "Difracție",
+          "Absorbție"
+        ],
+        correctIndex: 3
+      },
+      {
+        question: "Când facem calcule legate de puterea wireless, ce termeni se convertesc unul în altul?",
+        answers: [
+          "Hz to GHz",
+          "W to dBm",
+          "dBi to EIRP",
+          "dBm to W",
+          "dBd to dBi"
+        ],
+        correctIndex: 4
+      },
+      {
+        question: "Ce organizație a creat standardul wireless?",
+        answers: [
+          "FCC",
+          "Wi-Fi Alliance",
+          "ETSI",
+          "IEEE",
+          "IETF"
+        ],
+        correctIndex: 3
+      },
+      {
+        question: "Ce mărime are cheia utilizată la WEP pentru ca Wi-Fi Alliance să certifice un produs?",
+        answers: [
+          "64 bit",
+          "128 bit",
+          "256 bit",
+          "40 bit",
+          "104 bit"
+        ],
+        correctIndex: 3
+      },
+      {
+        question: "Ce înseamnă Wi-Fi?",
+        answers: [
+          "Wireless Frequency",
+          "Wireless Fidelity",
+          "Wi-Fi Alliance",
+          "Wireless Faulty",
+          "E doar o neînțelegere că ar însemna “Wireless Fidelity”"
+        ],
+        correctIndex: 4
+      },
+      {
+        question: "Care din următoarele procese NU va reduce riscul de inginerie socială la un birou de ajutor?",
+        answers: [
+          "Implementarea parolelor puternice",
+          "Control acces fizic",
+          "Apelantul să verifice identitatea operatorului de la birou",
+          "Training de securitate pentru angajați",
+          "Criptare email"
+        ],
+        correctIndex: 2
+      },
+      {
+        question: "Ce preferă să atace un hacker care atacă din motive financiare?",
+        answers: [
+          "Portofel digital",
+          "Banca",
+          "Server privat",
+          "Rețea socială",
+          "FinTech startup"
+        ],
+        correctIndex: 1
+      },
+      {
+        question: "Care din termenii următori descriu mai bine un hacker Wi-Fi?",
+        answers: [
+          "Phisher",
+          "White hat",
+          "Wardriver / șofer war",
+          "Script kiddie",
+          "Black hat"
+        ],
+        correctIndex: 2
+      }
+];
+    const subtestSizes = [10,10,10,11,10,10];
     const subtestStarts = subtestSizes.map((_,i,arr)=>
       arr.slice(0,i).reduce((a,b)=>a+b,0)
     );
